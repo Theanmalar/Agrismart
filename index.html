@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AgriSmart AI – Crop Yield & Disease Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f8f4;
+      color: #2f4f2f;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #4caf50;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0px 3px 8px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      color: #2e7d32;
+      text-align: center;
+    }
+
+    .upload-section {
+      margin: 20px 0;
+      border: 2px dashed #4caf50;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      background: #f9fff9;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    .results {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #e8f5e9;
+      display: none;
+    }
+
+    .recommendations {
+      margin-top: 8px;
+      text-align: left;
+    }
+
+    .recommendations ul {
+      padding-left: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🌱 AgriSmart AI – Crop & Disease Prediction</header>
+
+  <div class="container">
+
+    <!-- Soil Prediction Section -->
+    <h2>Soil Analysis & Crop Recommendation</h2>
+    <div class="upload-section">
+      <input type="file" id="soilInput" accept="image/*"><br>
+      <button onclick="predict('soil')">Analyze Soil</button>
+      <div class="results" id="soilResults"></div>
+    </div>
+
+    <!-- Disease Detection Section -->
+    <h2>Plant Disease Detection</h2>
+    <div class="upload-section">
+      <input type="file" id="diseaseInput" accept="image/*"><br>
+      <button onclick="predict('disease')">Detect Disease</button>
+      <div class="results" id="diseaseResults"></div>
+    </div>
+
+  </div>
+
+  <footer>© 2025 AgriSmart AI | Built for Farmers 🌾</footer>
+
+  <script>
+    async function predict(type) {
+      const input = type === "soil" ? document.getElementById("soilInput") : document.getElementById("diseaseInput");
+      const resultsDiv = type === "soil" ? document.getElementById("soilResults") : document.getElementById("diseaseResults");
+
+      if (!input.files[0]) {
+        alert("Please select an image first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", input.files[0]);
+      formData.append("prediction_type", type);
+
+      resultsDiv.style.display = "block";
+      resultsDiv.innerHTML = "⏳ Processing...";
+
+      try {
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          resultsDiv.innerHTML = `
+            <strong>Prediction:</strong> ${data.prediction} <br>
+            <strong>Confidence:</strong> ${(data.confidence * 100).toFixed(2)}% 
+            <div class="recommendations">
+              <strong>Recommendations:</strong>
+              <ul>
+                ${data.recommendations.map(r => <li>${r}</li>).join('')}
+              </ul>
+            </div>
+          `;
+        } else {
+          resultsDiv.innerHTML = <span style="color:red;">Error: ${data.error}</span>;
+        }
+      } catch (err) {
+        resultsDiv.innerHTML = <span style="color:red;">Failed to connect to server.</span>;
+      }
+    }
+  </script>
+
+</body>
+</html>

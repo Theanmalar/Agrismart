@@ -1,0 +1,11 @@
+Flask>=2.3.5  # Use latest Flask that supports Python 3.13
+Flask-SQLAlchemy>=3.0
+Werkzeug>=2.3
+numpy
+pandas
+tensorflow
+keras
+Pillow
+opencv-python
+scikit-learn
+matplotlib

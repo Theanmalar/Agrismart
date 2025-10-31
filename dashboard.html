@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prediction History</title>
+  <style>
+    body { font-family: Arial; background: #f1f8f4; color:#2f4f2f; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background: #4caf50; color: white; }
+    img { max-height: 60px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h2>📊 Prediction History</h2>
+  <table>
+    <tr>
+      <th>Type</th><th>Image</th><th>Prediction</th>
+      <th>Confidence</th><th>Recommendations</th><th>Timestamp</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+      <td>{{ row[0] }}</td>
+      <td><img src="{{ row[1] }}" alt="img"></td>
+      <td>{{ row[2] }}</td>
+      <td>{{ (row[3]*100)|round(2) }}%</td>
+      <td>{{ row[4] }}</td>
+      <td>{{ row[5] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
